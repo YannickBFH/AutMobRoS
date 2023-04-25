@@ -3,11 +3,11 @@
 MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
     : cs(cs),
     
-      slSystemOff("System is offline"),
-      slSystemOn("System is online"),
+      // slSystemOff("System is offline"),
+      // slSystemOn("System is online"),
 
-      doSystemOn("Startup the system"),
-      doSystemOff("Shutdown the system")
+      // doSystemOn("Startup the system"),
+      // doSystemOff("Shutdown the system")
 {
     eeros::hal::HAL &hal = eeros::hal::HAL::instance();
 
@@ -21,13 +21,14 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
 
     // criticalInputs = { ... };
 
-    // Add all safety levels to the safety system
-    addLevel(slSystemOff);
-    addLevel(slSystemOn);
+    // Add all safety levels to the safety system (Defined in prior for the System)
+    // Order: from lovest to the highest
+    //addLevel(slSystemOff);
+    //addLevel(slSystemOn);
 
-    // Add events to individual safety levels
-    slSystemOff.addEvent(doSystemOn, slSystemOn, kPublicEvent);
-    slSystemOn.addEvent(doSystemOff, slSystemOff, kPublicEvent);
+    // Add events to individual safety levels (Defined in prior for the System)
+    //slSystemOff.addEvent(doSystemOn, slSystemOn, kPublicEvent);
+    //slSystemOn.addEvent(doSystemOff, slSystemOff, kPublicEvent);
 
     // Add events to multiple safety levels
     // addEventToAllLevelsBetween(lowerLevel, upperLevel, event, targetLevel, kPublicEvent/kPrivateEvent);
@@ -39,20 +40,20 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
     // level.setOutputActions({ ... });
 
     // Define and add level actions
-    slSystemOff.setLevelAction([&](SafetyContext *privateContext) {
-        cs.timedomain.stop();
-        eeros::Executor::stop();
-    });
+    //slSystemOff.setLevelAction([&](SafetyContext *privateContext) {
+    //    cs.timedomain.stop();
+    //   eeros::Executor::stop();
+    //});
 
-    slSystemOn.setLevelAction([&](SafetyContext *privateContext) {
-        cs.timedomain.start();
-    });
+    //slSystemOn.setLevelAction([&](SafetyContext *privateContext) {
+    //    cs.timedomain.start();
+    //});
 
-    // Define entry level
-    setEntryLevel(slSystemOff);
+    // Define entry level (lowest safety level)
+    //setEntryLevel(slSystemOff);
 
-    // Define exit function
-    exitFunction = ([&](SafetyContext *privateContext) {
-        privateContext->triggerEvent(doSystemOff);
-    });
+    // Define exit function (terminates the program safely)
+    //exitFunction = ([&](SafetyContext *privateContext) {
+    //    privateContext->triggerEvent(doSystemOff);
+    //});
 }
