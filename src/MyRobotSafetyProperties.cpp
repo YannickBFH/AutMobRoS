@@ -22,14 +22,15 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
       powerOff("Power off"),
       startMoving("Start moving"),
       stopMoving("Stop moving"),
+      resetEmergency("reset Emergency"),
       motorsHalted("Motors halted")
       
 {
     eeros::hal::HAL &hal = eeros::hal::HAL::instance();
 
     // Declare and add critical outputs
-    redLED = hal.getLogicOutput("onBoardLEDred");
     greenLED = hal.getLogicOutput("onBoardLEDgreen");
+    redLED = hal.getLogicOutput("onBoardLEDred");
 
     criticalOutputs = {redLED, greenLED};
 
