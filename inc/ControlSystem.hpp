@@ -4,6 +4,7 @@
 #include <eeros/control/TimeDomain.hpp>
 #include <eeros/core/Executor.hpp>
 #include <eeros/control/Constant.hpp>
+#include "customBlocks/Controller.hpp"
 #include <eeros/control/Gain.hpp>
 
 using namespace eeros::control;
