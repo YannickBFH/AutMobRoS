@@ -6,6 +6,7 @@
 #include <eeros/control/Constant.hpp>
 #include <eeros/control/Gain.hpp>
 
+
 using namespace eeros::control;
 
 class ControlSystem
