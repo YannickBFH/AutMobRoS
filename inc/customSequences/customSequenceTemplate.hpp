@@ -3,6 +3,8 @@
 
 #include <eeros/sequencer/Sequence.hpp>
 
+// IS very similar to step
+
 class CustomSequenceName : public eeros::sequencer::Sequence
 {
 public:
