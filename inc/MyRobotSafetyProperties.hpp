@@ -10,8 +10,6 @@ class MyRobotSafetyProperties : public eeros::safety::SafetyProperties
 public:
     MyRobotSafetyProperties(ControlSystem &cs, double dt);
 
-    // Here we define the
-
     // Define all possible events ()
     eeros::safety::SafetyEvent doSystemOn;
     eeros::safety::SafetyEvent abort;
@@ -25,7 +23,7 @@ public:
     eeros::safety::SafetyEvent powerOff;
     eeros::safety::SafetyEvent stopMoving;
 
-    // Defina all possible levels
+    // Define all possible levels
     eeros::safety::SafetyLevel slSystemOff;         // Level 0
     eeros::safety::SafetyLevel slShuttingDown;      // Level 1
     eeros::safety::SafetyLevel slBraking;           // Level 2
