@@ -1,23 +1,27 @@
 #include "ControlSystem.hpp"
 
 ControlSystem::ControlSystem(double dt)
-    : myConstant(1.0), myGain(2.0),
-      timedomain("Main time domain", dt, true)
+    :   sensor("quat1"),
+        servo("servo1"),
+        timedomain("Main time domain", dt, true)
 {
     // Name all blocks
-    myConstant.setName("My constant");
-    myGain.setName("My gain");
+    sensor.setName("IMU-Sensor");
+    controller.setName("Controller");
+    servo.setName("Servo");
 
     // Name all signals
-    myConstant.getOut().getSignal().setName("My constant value");
-    myGain.getOut().getSignal().setName("My constant value multiplied with my gain");
+    sensor.getOut().getSignal().setName("theta [rad]");
+    controller.getOut().getSignal().setName("phi [rad]");
 
     // Connect signals
-    myGain.getIn().connect(myConstant.getOut());
+    controller.getIn().connect(sensor.getOut());
+    servo.getIn().connect(controller.getOut());
 
     // Add blocks to timedomain
-    timedomain.addBlock(myConstant);
-    timedomain.addBlock(myGain);
+    timedomain.addBlock(sensor);
+    timedomain.addBlock(controller);
+    timedomain.addBlock(servo);
 
     // Add timedomain to executor
     eeros::Executor::instance().add(timedomain);
