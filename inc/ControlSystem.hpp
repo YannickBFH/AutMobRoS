@@ -5,6 +5,7 @@
 #include <eeros/core/Executor.hpp>
 #include <eeros/control/PeripheralInput.hpp>
 #include "customBlocks/Controller.hpp"
+#include <eeros/control/Constant.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
 
 
@@ -18,6 +19,7 @@ public:
     // Define Blocks
     PeripheralInput<> sensor;   // IMU-Senso
     Controller<> controller;    // Controler
+    Constant<> constant         // Constant
     PeripheralOutput<> servo;   // Servo                  
 
     TimeDomain timedomain;
