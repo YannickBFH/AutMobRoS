@@ -1,9 +1,21 @@
-#ifndef orientationException_HPP_
-#define orientationException_HPP_
+#ifndef ORIENTATIONEXCEPTION_HPP_
+#define ORIENTATIONEXCEPTION_HPP_
 
 #include <eeros/sequencer/Sequence.hpp>
 #include "ControlSystem.hpp"
+#include <eeros/sequencer/Condition.hpp>
 
+
+class CheckOrientation : public eeros::sequencer::Condition
+{
+public:
+    CheckOrientation(double angle, ControlSystem &cs) : angle(angle), cs(cs) {}
+    bool validate() { return abs(cs.sensor.getOut().getSignal().getValue()) > angle; }
+
+private:
+    ControlSystem &cs;
+    double angle;
+};
 
 class OrientationException : public eeros::sequencer::Sequence
 {
@@ -33,4 +45,4 @@ private:
 };
 
 
-#endif // OrientationException_HPP_
+#endif // ORIENTATIONEXCEPTION_HPP_

@@ -8,7 +8,7 @@ class MoveServoTo : public eeros::sequencer::Step
 {
 public:
     MoveServoTo(std::string name, eeros::sequencer::Sequence *caller, ControlSystem &cs)
-        : eeros::sequencer::Step(name, caller)
+        : cs(cs), eeros::sequencer::Step(name, caller)
     {
         log.info() << "Step created: " << name;
     }

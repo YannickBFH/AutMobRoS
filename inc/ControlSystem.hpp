@@ -19,7 +19,7 @@ public:
     // Define Blocks
     PeripheralInput<> sensor;   // IMU-Senso
     Controller<> controller;    // Controler
-    Constant<> constant         // Constant
+    Constant<> constant;         // Constant
     PeripheralOutput<> servo;   // Servo                  
 
     TimeDomain timedomain;

@@ -12,17 +12,6 @@
 #include <eeros/sequencer/Monitor.hpp>
 
 
-class CheckOrientation : public eeros::sequencer::Condition
-{
-public:
-    CheckOrientation(double angle, ControlSystem &cs) : angle(angle), cs(cs) {}
-    bool validate() { return abs(cs.sensor.getOut().getSignal().getValue()) > angle; }
-
-private:
-    ControlSystem &cs;
-    double angle;
-};
-
 class MainSequence : public eeros::sequencer::Sequence
 {
 public:
@@ -34,14 +23,13 @@ public:
           sp(sp),
           cs(cs),
 
-          sleep("Sleep", this)
+          sleep("Sleep", this),
 
-          moveServoTo("moveServoTo", this,cs);
-
-        checkOrientation(0.1, cs);
-        oreientatonException("Orientation exception", this, cs, checkOrientation);
-        orientationMonitor("Orientation monitor", this, checkOrientation, eeros::sequencer::SequenceProp::resume, &orientationException)
-
+          moveServoTo("moveServoTo", this,cs),
+          
+          checkOrientation(0.1, cs),
+          orientationException("Orientation exception", this, cs, checkOrientation),
+          orientationMonitor("Orientation monitor", this, checkOrientation, eeros::sequencer::SequenceProp::resume, &orientationException)
     {
         addMonitor(&orientationMonitor);
         log.info() << "Sequence created: " << name;
