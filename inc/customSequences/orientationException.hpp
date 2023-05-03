@@ -9,8 +9,12 @@
 class CheckOrientation : public eeros::sequencer::Condition
 {
 public:
+    // Initiate all Elements
     CheckOrientation(double angle, ControlSystem &cs) : angle(angle), cs(cs) {}
-    bool validate() { return abs(cs.sensor.getOut().getSignal().getValue()) > angle; }
+    bool validate() 
+    { 
+        return abs(cs.sensor.getOut().getSignal().getValue()) > angle; 
+    }
 
 private:
     ControlSystem &cs;
@@ -20,10 +24,11 @@ private:
 class OrientationException : public eeros::sequencer::Sequence
 {
 public:
+    // Initiate all Elements
     OrientationException(std::string name, eeros::sequencer::Sequence *caller,
                          ControlSystem &cs, CheckOrientation checkOrientation)
         : cs(cs), checkOrientation(checkOrientation),
-          eeros::sequencer::Sequence(name, caller, true)
+          eeros::sequencer::Sequence(name, caller, true) // Sequence in blocking = true
     {
         log.info() << "Sequence created: " << name;
     }
@@ -34,6 +39,7 @@ public:
         return 0;
     }
 
+    // Condition needs to be fulfilled to get out of sequence
     bool checkExitCondition()
     {
         return !checkOrientation.validate();

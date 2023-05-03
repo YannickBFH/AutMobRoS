@@ -16,7 +16,7 @@ ControlSystem::ControlSystem(double dt)
     controller.getOut().getSignal().setName("phi [rad]");
     constant.getOut().getSignal().setName("servo setpoint [rad]");
 
-    // Connect signals
+    // Connect signals (I modyfied the Controller from exercise 2)
     controller.getIn().connect(sensor.getOut());
     servo.getIn().connect(constant.getOut());
 

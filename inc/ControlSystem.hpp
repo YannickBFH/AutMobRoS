@@ -16,7 +16,7 @@ class ControlSystem
 public:
     ControlSystem(double dt);
 
-    // Define Blocks
+    // Define Blocks for ControllSystem
     PeripheralInput<> sensor;   // IMU-Senso
     Controller<> controller;    // Controler
     Constant<> constant;         // Constant

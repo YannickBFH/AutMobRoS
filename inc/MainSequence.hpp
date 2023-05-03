@@ -15,6 +15,7 @@
 class MainSequence : public eeros::sequencer::Sequence
 {
 public:
+    // Initiate all Elements
     MainSequence(std::string name, eeros::sequencer::Sequencer &seq,
                  eeros::safety::SafetySystem &ss,
                  MyRobotSafetyProperties &sp, ControlSystem &cs)
@@ -27,11 +28,16 @@ public:
 
           moveServoTo("moveServoTo", this,cs),
           
+          // Initiate seperate Sequence (Execption-Sequence)
           checkOrientation(0.1, cs),
           orientationException("Orientation exception", this, cs, checkOrientation),
+
+          // Initiate new Monitor and define what it does
           orientationMonitor("Orientation monitor", this, checkOrientation, eeros::sequencer::SequenceProp::resume, &orientationException)
     {
+        // Add Monitor to Sequece
         addMonitor(&orientationMonitor);
+
         log.info() << "Sequence created: " << name;
     }
 
@@ -39,6 +45,7 @@ public:
     {
         while (eeros::sequencer::Sequencer::running)
         {
+            // Define structure of main-Sequence
             moveServoTo(-0.5);
             sleep(1.0);
             moveServoTo(0.5);
@@ -48,6 +55,8 @@ public:
     }
 
 private:
+
+    // Define all Variables
     eeros::safety::SafetySystem &ss;
     ControlSystem &cs;
     MyRobotSafetyProperties &sp;

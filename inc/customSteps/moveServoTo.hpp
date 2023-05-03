@@ -7,6 +7,7 @@
 class MoveServoTo : public eeros::sequencer::Step
 {
 public:
+    // Initiate all Elements
     MoveServoTo(std::string name, eeros::sequencer::Sequence *caller, ControlSystem &cs)
         : cs(cs), eeros::sequencer::Step(name, caller)
     {
@@ -21,7 +22,7 @@ public:
 
     int action()
     {
-        // do something
+        // Define action
         log.info() << "Moving to " << pos << "rad."; 
         cs.constant.setValue(pos);
         return 0;
