@@ -3,9 +3,10 @@
 
 #include <eeros/control/TimeDomain.hpp>
 #include <eeros/core/Executor.hpp>
+
 #include <eeros/control/PeripheralInput.hpp>
-#include "customBlocks/Controller.hpp"
-#include <eeros/control/Constant.hpp>
+#include <eeros/control/Gain.hpp>
+#include <eeros/control/Saturation.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
 
 
@@ -17,10 +18,12 @@ public:
     ControlSystem(double dt);
 
     // Define Blocks for ControllSystem
-    PeripheralInput<> sensor;   // IMU-Senso
-    Controller<> controller;    // Controler
-    Constant<> constant;         // Constant
-    PeripheralOutput<> servo;   // Servo                  
+    PeripheralInput<> encoder2;      // Encoder-Inputsignal
+    Gain<> cont;                    // scale the value 
+    Saturation<> qdmax;             // check if value is a limit
+    Gain<> i;                       // gear-ratio
+    Gain<> kM;                      // motor-constant
+    PeripheralOutput<> motor1;       // Motor-Outputsignal                  
 
     TimeDomain timedomain;
 };

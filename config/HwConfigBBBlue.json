@@ -168,45 +168,93 @@
 			"type": "Fqd",
 			"channel1": {
 				"signalId": "enc1",
-				"scale": [ { "id" : "fqd",
-							"minIn": 	0, "maxIn": 6.283185307,
-							"minOut":	0, "maxOut": 4000 }
+				"scale": [ 
+					{ "id" : "gear",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 33 },
+					{ "id" : "enc",
+						"minIn": 	0, "maxIn": 6.283185307,
+						"minOut":	0, "maxOut": 16 },
+					{ "id" : "fqd",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 4 }
 					 ],
-				"range": [ { "id" : "fqd",
-							"noLimit": 	true }
+				"range": [ 
+					{ "id" : "gear",
+						"noLimit": 	true },
+					{ "id" : "enc",
+						"noLimit": 	true },
+					{ "id" : "fqd",
+						"noLimit": 	true }
 					 ],
 				"unit": "rad"
 			},
 			"channel2": {
 				"signalId": "enc2",
-				"scale": [ { "id" : "fqd",
-							"minIn": 	0, "maxIn": 6.283185307,
-							"minOut":	0, "maxOut": 4000 }
+				"scale": [ 
+					{ "id" : "gear",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 33 },
+					{ "id" : "enc",
+						"minIn": 	0, "maxIn": 6.283185307,
+						"minOut":	0, "maxOut": 16 },
+					{ "id" : "fqd",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 4 }
 					 ],
-				"range": [ { "id" : "fqd",
-							"noLimit": 	true }
+				"range": [ 
+					{ "id" : "gear",
+						"noLimit": 	true },
+					{ "id" : "enc",
+						"noLimit": 	true },
+					{ "id" : "fqd",
+						"noLimit": 	true }
 					 ],
 				"unit": "rad"
 			},
 			"channel3": {
 				"signalId": "enc3",
-				"scale": [ { "id" : "fqd",
-							"minIn": 	0, "maxIn": 6.283185307,
-							"minOut":	0, "maxOut": 4000 }
+				"scale": [ 
+					{ "id" : "gear",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 33 },
+					{ "id" : "enc",
+						"minIn": 	0, "maxIn": 6.283185307,
+						"minOut":	0, "maxOut": 16 },
+					{ "id" : "fqd",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 4 }
 					 ],
-				"range": [ { "id" : "fqd",
-							"noLimit": 	true }
+				"range": [ 
+					{ "id" : "gear",
+						"noLimit": 	true },
+					{ "id" : "enc",
+						"noLimit": 	true },
+					{ "id" : "fqd",
+						"noLimit": 	true }
 					 ],
 				"unit": "rad"
 			},
 			"channel4": {
 				"signalId": "enc4",
-				"scale": [ { "id" : "fqd",
-							"minIn": 	0, "maxIn": 6.283185307,
-							"minOut":	0, "maxOut": 4000 }
+				"scale": [ 
+					{ "id" : "gear",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 33 },
+					{ "id" : "enc",
+						"minIn": 	0, "maxIn": 6.283185307,
+						"minOut":	0, "maxOut": 16 },
+					{ "id" : "fqd",
+						"minIn": 	0, "maxIn": 1,
+						"minOut":	0, "maxOut": 4 }
 					 ],
-				"range": [ { "id" : "fqd",
-							"noLimit": 	true }
+				"range": [ 
+					{ "id" : "gear",
+						"noLimit": 	true },
+					{ "id" : "enc",
+						"noLimit": 	true },
+					{ "id" : "fqd",
+						"noLimit": 	true }
 					 ],
 				"unit": "rad"
 			}

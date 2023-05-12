@@ -7,9 +7,6 @@
 #include "MyRobotSafetyProperties.hpp"
 #include "ControlSystem.hpp"
 #include <eeros/sequencer/Wait.hpp>
-#include "customSteps/moveServoTo.hpp"
-#include "customSequences/orientationException.hpp"
-#include <eeros/sequencer/Monitor.hpp>
 
 
 class MainSequence : public eeros::sequencer::Sequence
@@ -24,19 +21,18 @@ public:
           sp(sp),
           cs(cs),
 
-          sleep("Sleep", this),
+          sleep("Sleep", this)
 
-          moveServoTo("moveServoTo", this,cs),
+         
           
           // Initiate seperate Sequence (Execption-Sequence)
-          checkOrientation(0.1, cs),
-          orientationException("Orientation exception", this, cs, checkOrientation),
+
 
           // Initiate new Monitor and define what it does
-          orientationMonitor("Orientation monitor", this, checkOrientation, eeros::sequencer::SequenceProp::resume, &orientationException)
+          
+          
     {
         // Add Monitor to Sequece
-        addMonitor(&orientationMonitor);
 
         log.info() << "Sequence created: " << name;
     }
@@ -46,10 +42,6 @@ public:
         while (eeros::sequencer::Sequencer::running)
         {
             // Define structure of main-Sequence
-            moveServoTo(-0.5);
-            sleep(1.0);
-            moveServoTo(0.5);
-            sleep(1.0);
         }
         return 0;
     }
@@ -62,10 +54,6 @@ private:
     MyRobotSafetyProperties &sp;
 
     eeros::sequencer::Wait sleep;
-    MoveServoTo moveServoTo;
-    CheckOrientation checkOrientation;
-    OrientationException orientationException;
-    eeros::sequencer::Monitor orientationMonitor;
 };
 
 #endif // MAINSEQUENCE_HPP_
