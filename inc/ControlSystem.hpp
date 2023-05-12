@@ -18,12 +18,13 @@ public:
     ControlSystem(double dt);
 
     // Define Blocks for ControllSystem
-    PeripheralInput<> encoder2;      // Encoder-Inputsignal
-    Gain<> cont;                    // scale the value 
-    Saturation<> qdmax;             // check if value is a limit
-    Gain<> i;                       // gear-ratio
-    Gain<> kM;                      // motor-constant
-    PeripheralOutput<> motor1;       // Motor-Outputsignal                  
+    PeripheralInput<> encoder2;         // Encoder-Inputsignal
+    Gain<> cont;                        // scale the value 
+    Saturation<> Qmax;                  // check if value is a limit
+    Gain<> iInv;                        // inverse gear-ratio
+    Gain<> kMInv;                       // inverse motor-constant
+    Gain<> R;                           // Resistance
+    PeripheralOutput<> motor1;          // Motor-Outputsignal                  
 
     TimeDomain timedomain;
 };
