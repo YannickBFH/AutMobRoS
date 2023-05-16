@@ -5,9 +5,9 @@
 #include <eeros/core/Executor.hpp>
 
 #include <eeros/control/PeripheralInput.hpp>
-#include <eeros/control/Gain.hpp>
-#include <eeros/control/Saturation.hpp>
-#include <eeros/control/PeripheralOutput.hpp>
+#include <eeros/control/Mux.hpp>
+#include <eeros/control/D.hpp>
+#include "customBlocks/FwKinOdom.hpp"
 
 
 using namespace eeros::control;
@@ -18,13 +18,10 @@ public:
     ControlSystem(double dt);
 
     // Define Blocks for ControllSystem
-    PeripheralInput<> encoder2;         // Encoder-Inputsignal
-    Gain<> cont;                        // scale the value 
-    Saturation<> Qmax;                  // check if value is a limit
-    Gain<> iInv;                        // inverse gear-ratio
-    Gain<> kMInv;                       // inverse motor-constant
-    Gain<> R;                           // Resistance
-    PeripheralOutput<> motor1;          // Motor-Outputsignal                  
+    PeripheralInput<> enc1, enc2;           // Encoder-Inputsignal (1 and 2)
+    Mux<2> E;                               // Merge the two signals into a vector
+    D<eeros::math::Vector2> Ed;             // Derive the signal
+    FwKinOdom<> fwKinOdom;                  // forward Kinematics (Defined as a subsystem)
 
     TimeDomain timedomain;
 };

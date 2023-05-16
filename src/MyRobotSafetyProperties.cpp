@@ -91,7 +91,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
     slMotorPowerOn.setOutputActions({        set(greenLED, true),    set(redLED, false) });
     slSystemMoving.setOutputActions({        set(greenLED, true),    set(redLED, false) });
 
-    // Define and add level actions
+     // Define and add level actions
     slSystemOff.setLevelAction([&](SafetyContext *privateContext) {
         eeros::Executor::stop();
     });
@@ -108,11 +108,12 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
 
     slStartingUp.setLevelAction([&](SafetyContext *privateContext) {
         cs.timedomain.start();
+        cs.fwKinOdom.enable();
         privateContext->triggerEvent(systemStarted);
     });
 
     slEmergency.setLevelAction([&](SafetyContext *privateContext) {
-        
+        cs.fwKinOdom.disable();
     });
 
     slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext) {
@@ -121,30 +122,21 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
     });
 
     slSystemOn.setLevelAction([&, dt](SafetyContext *privateContext) {
-        if (slSystemOn.getNofActivations()*dt >= 1)   // wait 1 sec
-        {
-            privateContext->triggerEvent(powerOn);
-        }
+        cs.fwKinOdom.enable();
     });
 
     slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext) {
-        if (slMotorPowerOn.getNofActivations()*dt >= 5)   // wait 5 sec
-        {
-            privateContext->triggerEvent(startMoving);
-        }
+        cs.fwKinOdom.enable();
     });
 
     slSystemMoving.setLevelAction([&, dt](SafetyContext *privateContext) {
-        if (slSystemMoving.getNofActivations()*dt >= 5)   // wait 5 sec
-        {
-            privateContext->triggerEvent(stopMoving);
-        }
+        cs.fwKinOdom.enable();
     });
 
-    // Define entry level (lowest safety level)
+    // Define entry level
     setEntryLevel(slSystemOff);
 
-    // Define exit function (terminates the program safely)
+    // Define exit function
     exitFunction = ([&](SafetyContext *privateContext) {
         privateContext->triggerEvent(abort);
     });
