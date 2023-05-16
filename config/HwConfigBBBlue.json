@@ -83,11 +83,16 @@
 				"signalId": "motor2",
 				"scale": [ { "id" : "dac",
 							"minIn": 	-1.0, 	"maxIn": 	1.0,
-							"minOut": 	-8.2, 	"maxOut": 	8.2 }
+							"minOut": 	-8.2, 	"maxOut": 	8.2 },
+							{ "id" : "inv",
+							"scale": -1.0, "offset": 0.0 }
 					 ],
 				"range": [ { "id" : "dac",
 							"minIn": 	-1.0, 	"maxIn": 	1.0,
-							"minOut": 	-8.2, 	"maxOut": 	8.2 }
+							"minOut": 	-8.2, 	"maxOut": 	8.2 },
+							{ "id" : "inv",
+							"minIn": 	-8.2, 	"maxIn": 	8.2,
+							"minOut": 	 8.2, 	"maxOut":  -8.2 }
 					 ],
 				"unit": "V"
 			},
