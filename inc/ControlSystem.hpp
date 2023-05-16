@@ -8,7 +8,8 @@
 #include <eeros/control/Mux.hpp>
 #include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
-
+#include <eeros/control/Constant.hpp>
+#include "customBlocks/InvKin.hpp"
 
 using namespace eeros::control;
 
@@ -22,6 +23,9 @@ public:
     Mux<2> E;                               // Merge the two signals into a vector
     D<eeros::math::Vector2> Ed;             // Derive the signal
     FwKinOdom<> fwKinOdom;                  // forward Kinematics (Defined as a subsystem)
+
+    Constant<> RvRx, omegaR;                // Constants for testing
+    InvKin<> invKin;                        // Inverse Kinematics
 
     TimeDomain timedomain;
 };
