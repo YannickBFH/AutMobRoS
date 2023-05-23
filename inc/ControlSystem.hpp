@@ -5,10 +5,11 @@
 #include <eeros/core/Executor.hpp>
 
 #include <eeros/control/PeripheralInput.hpp>
-#include <eeros/control/Mux.hpp>
+#include <eeros/control/Sum.hpp>
 #include <eeros/control/D.hpp>
-#include "customBlocks/FwKinOdom.hpp"
-
+#include <eeros/control/Gain.hpp>
+#include <eeros/control/Saturation.hpp>
+#include <eeros/control/PeripheralOutput.hpp>
 
 using namespace eeros::control;
 
@@ -19,9 +20,18 @@ public:
 
     // Define Blocks for ControllSystem
     PeripheralInput<> enc1, enc2;           // Encoder-Inputsignal (1 and 2)
-    Mux<2> E;                               // Merge the two signals into a vector
-    D<eeros::math::Vector2> Ed;             // Derive the signal
-    FwKinOdom<> fwKinOdom;                  // forward Kinematics (Defined as a subsystem)
+    Sum<> e;
+    Gain<> Kp;
+    D<> ed;
+    Gain<> Kd;
+    Sum<> qdd_c;
+    Gain<> M;
+    Saturation<> MQmax;
+    Gain<> iInv;
+    Gain<> KmInv;
+    Gain<> R;
+    PeripheralOutput<> mot1;
+
 
     TimeDomain timedomain;
 };
