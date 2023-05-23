@@ -30,6 +30,13 @@ public:
     Gain<> iInv;
     Gain<> KmInv;
     Gain<> R;
+
+    D<> qd;
+    Saturation<> qdmax;
+    Gain<> i;
+    Gain<> Km;
+    Sum<> U;
+
     PeripheralOutput<> mot1;
 
 

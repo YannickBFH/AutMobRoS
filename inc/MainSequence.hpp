@@ -21,9 +21,7 @@ public:
           sp(sp),
           cs(cs),
 
-          sleep("Sleep", this)
-
-         
+          sleep("Sleep", this)      
           
           // Initiate seperate Sequence (Execption-Sequence)
 
@@ -43,6 +41,8 @@ public:
         {
             // Define structure of main-Sequence
             sleep(1.0);
+            log.info() << cs.MQmax.getOut().getSignal();
+            log.info() << cs.qdmax.getOut().getSignal();
         }
         return 0;
     }
