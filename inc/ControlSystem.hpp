@@ -9,6 +9,8 @@
 #include <eeros/control/D.hpp>
 #include <eeros/control/Gain.hpp>
 #include <eeros/control/Saturation.hpp>
+#include <eeros/control/Mux.hpp>
+#include <eeros/control/DeMux.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
 
 using namespace eeros::control;
@@ -20,24 +22,30 @@ public:
 
     // Define Blocks for ControllSystem
     PeripheralInput<> enc1, enc2;           // Encoder-Inputsignal (1 and 2)
-    Sum<> e;
-    Gain<> Kp;
-    D<> ed;
-    Gain<> Kd;
-    Sum<> qdd_c;
-    Gain<> M;
-    Saturation<> MQmax;
-    Gain<> iInv;
-    Gain<> KmInv;
-    Gain<> R;
 
-    D<> qd;
-    Saturation<> qdmax;
-    Gain<> i;
-    Gain<> Km;
-    Sum<> U;
+    Mux<2> mux1;
+    Mux<2> mux2;
 
-    PeripheralOutput<> mot1;
+    Sum<2, eeros::math::Vector2> e;
+    Gain<eeros::math::Vector2> Kp;
+    D<eeros::math::Vector2> ed;
+    Gain<eeros::math::Vector2> Kd;
+    Sum<2, eeros::math::Vector2> qdd_c;
+    Gain<eeros::math::Vector2> M;
+    Saturation<eeros::math::Vector2> MQmax;
+    Gain<eeros::math::Vector2> iInv;
+    Gain<eeros::math::Vector2> KmInv;
+    Gain<eeros::math::Vector2> R;
+
+    D<eeros::math::Vector2> qd;
+    Saturation<eeros::math::Vector2> qdmax;
+    Gain<eeros::math::Vector2> i;
+    Gain<eeros::math::Vector2> Km;
+    Sum<2, eeros::math::Vector2> U;
+
+    DeMux<2> deMux;
+
+    PeripheralOutput<> mot1, mot2;
 
 
     TimeDomain timedomain;
