@@ -31,14 +31,12 @@ public:
      *
      * @param xT x coordinate of target position
      * @param yT y coordinate of target position
-     * @param phiT target orientation
      * @return int start the step
      */
-    int operator()(double xT, double yT, double phiT)
+    int operator()(double xT, double yT)
     {
         this->xT = xT;
         this->yT = yT;
-        this->phiT = phiT;
         return start();
     }
 
@@ -50,8 +48,8 @@ public:
      */
     int action()
     {
-        cs.path.setTarget(xT, yT, phiT);
-        log.info() << "Target pose set to x: " << xT << ", y: " << yT << ", phi: " << phiT;
+        cs.tcpVecPosCont.setTarget({xT, yT});
+        log.info() << "Target pose set to x: " << xT << ", y: " << yT;
         log.info() << "Start moving.";
         return 0;
     }
@@ -62,15 +60,15 @@ public:
      * @return true target position reached
      * @return false path planner still running
      */
-    bool checkExitCondition()
+ bool checkExitCondition()
     {
-        if (cs.path.getStatus())
+        if (cs.tcpVecPosCont.getStatus())
             log.info() << "Target pose reached.";
-        return cs.path.getStatus();
+        return cs.tcpVecPosCont.getStatus();
     }
 
 private:
-    double xT, yT, phiT;
+    double xT, yT;
     ControlSystem &cs;
 };
 

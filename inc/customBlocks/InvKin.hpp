@@ -3,69 +3,80 @@
 
 #include <eeros/math/Matrix.hpp>
 #include <eeros/control/Blockio.hpp>
-// Include header files for the subblocks
+#include <eeros/control/Gain.hpp>
 
 using namespace eeros::control;
 
-template <typename T = double>
-class InvKin : public Block   // It is set to "Block", because its a Subsystem
+/**
+ * @brief Inverse kinematics class for a differential drive robot
+ *
+ */
+class InvKin : public Blockio<1, 0>
 {
 public:
-
     /**
-     *Some Instructions 
      * @brief Construct a new Inv Kin object
-     * 
+     *
+     * @param L distance between the TCP and the midpoint between the two wheels
      * @param B distance between the two wheels
      */
-
-    InvKin(double B)
-    : B(B),
-    WJR([&, B]()
-              {
-              eeros::math::Matrix<2,2> M = {1.0, 1.0, -B/2.0, B/2.0};
-              eeros::math::Vector2 v = {WJR.getIn(0).getSignal().getValue(), WJR.getIn(1).getSignal().getValue()};
-              WJR.getOut().getSignal().setValue(M*v);
-              WJR.getOut().getSignal().setTimestamp(WJR.getIn(0).getSignal().getTimestamp()); })
+    InvKin(double L, double B)
+        : RRG({1.0, 0.0, 0.0, 1.0}),
+          RJT({1.0, 0.0, 0.0, 1.0 / L}),
+          WJR({1.0, 1.0, -B / 2.0, B / 2.0})
     {
-        // Connect subblocks, initialize variables, ...
-
         // Name all blocks
-        WJR.setName("InvKin->WJR (inverse Jacobianmatrix)");
+        RRG.setName("InvKin->RRG");
+        RJT.setName("InvKin->RJT");
+        WJR.setName("InvKin->WJR");
 
         // Name all signals
+        RRG.getOut().getSignal().setName("RvTc [m/s]");
+        RJT.getOut().getSignal().setName("RvRxc [m/s], omegaRc [rad/s]");
         WJR.getOut().getSignal().setName("vW [m/s]");
+
+        // Connect all blocks
+        RJT.getIn().connect(RRG.getOut());
+        WJR.getIn().connect(RJT.getOut());
     }
 
-    // Implement getter functions for the subsystem inputs
     /**
-     * @return Input<>& Input for the robot velocity in x direction
+     * @brief Input getter function
+     *
+     * @return Input<>& Input for the global TCP velocity
      */
-    Input<> &getInRvRx() { return WJR.getIn(0); }
+    Input<eeros::math::Vector2> &getInGvTc() { return RRG.getIn(); }
 
     /**
-     * @return Input<>& Input for the angular robot velocity
+     * @brief Input getter function
+     *
+     * @return Input<>& Input for the global TCP orientation
      */
-    Input<> &getInOmegaR() { return WJR.getIn(1); }
+    Input<> &getInPhi() { return this->getIn(); }
 
-    // Implement getter functions for the subsystem outputs
-     /**
+    /**
+     * @brief Ouput getter function
+     *
      * @return Output<eeros::math::Vector2>& Output for the wheel velocities
      */
     Output<eeros::math::Vector2> &getOut() { return WJR.getOut(); }
 
+    /**
+     * @brief run method
+     *
+     */
     virtual void run()
     {
-        // Calculate output values, set timestamps and 
-        // call the run method of the subblocks
-         
+        double cphi = std::cos(this->getIn().getSignal().getValue());
+        double sphi = std::sin(this->getIn().getSignal().getValue());
+        RRG.setGain({cphi, -sphi, sphi, cphi});
+        RRG.run();
+        RJT.run();
         WJR.run();
     }
 
 protected:
-    // Define intermediate variables and subblocks
-    double B;
-    Blockio<2, 1, double, eeros::math::Vector2> WJR;
+    Gain<eeros::math::Vector2, eeros::math::Matrix<2, 2>> RRG, RJT, WJR;
 };
 
 #endif //INVKIN_HPP_

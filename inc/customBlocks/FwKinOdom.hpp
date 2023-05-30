@@ -21,11 +21,12 @@ public:
      * @brief           Construct a new Fw Kin Odom object
      * 
      * @param B         distance between the two wheels
+     * @param L distance between the TCP and the midpoint between the two wheels
      * @param GrRInit   Initial global robot position
      * @param phiInit   Initial global robot orientation
      */
 
-    FwKinOdom(double B, eeros::math::Vector2 GrRInit = 0.0, double phiInit = 0.0)
+    FwKinOdom(double B, double L, eeros::math::Vector2 GrRInit = 0.0, double phiInit = 0.0)
      : B(B),
         // Inputvector for speed at the wheels
         vw(this),
@@ -39,6 +40,15 @@ public:
                 RJW.getOut(i).getSignal().setValue(out(i));
                 RJW.getOut(i).getSignal().setTimestamp(RJW.getIn().getSignal().getTimestamp());
             } }),
+        TJR([&, L]()
+              {
+            TJR.getOut(0).getSignal().setValue(TJR.getIn(0).getSignal().getValue());
+            TJR.getOut(0).getSignal().setTimestamp(TJR.getIn(0).getSignal().getTimestamp());
+            TJR.getOut(1).getSignal().setValue(TJR.getIn(1).getSignal().getValue() + L*TJR.getIn(2).getSignal().getValue());
+            TJR.getOut(1).getSignal().setTimestamp(TJR.getIn(1).getSignal().getTimestamp());
+            TJR.getOut(2).getSignal().setValue(TJR.getIn(2).getSignal().getValue());
+            TJR.getOut(2).getSignal().setTimestamp(TJR.getIn(2).getSignal().getTimestamp()); }),
+
         // Rotationsmatrix from robot to baseframe
          GRR([&]()
               {
@@ -63,6 +73,7 @@ public:
         // Name all blocks
         RJW.setName("FwKinOdom->RJW (Jabobianmatrix)");
         GRR.setName("FwKinOdom->GRR (Rotationsmatrix)");
+        TJR.setName("FwKinOdom-TJR");
         GrR.setName("FwKinOdom->GrR (Global robot position)");
         phi.setName("FwKinOdom->phi (Global robot orientation)");
 
@@ -70,6 +81,10 @@ public:
         RJW.getOut(0).getSignal().setName("RvRx [m/s]");
         RJW.getOut(1).getSignal().setName("RvRy [m/s]");
         RJW.getOut(2).getSignal().setName("omegaR [rad/s]");
+
+        TJR.getOut(0).getSignal().setName("RvTx [m/s]");
+        TJR.getOut(1).getSignal().setName("RvTy [m/s]");
+        TJR.getOut(2).getSignal().setName("omegaT [rad/s]");
 
         GRR.getOut().getSignal().setName("GvR [m/s]");
 
@@ -79,10 +94,13 @@ public:
 
         // Connect all signals
         RJW.getIn().connect(vw);
-        GRR.getIn(0).connect(RJW.getOut(0));
-        GRR.getIn(1).connect(RJW.getOut(1));
+        TJR.getIn(0).connect(RJW.getOut(0));
+        TJR.getIn(1).connect(RJW.getOut(1));
+        TJR.getIn(2).connect(RJW.getOut(2));
+        GRR.getIn(0).connect(TJR.getOut(0));
+        GRR.getIn(1).connect(TJR.getOut(1));
         GRR.getIn(2).connect(phi.getOut());
-        phi.getIn().connect(RJW.getOut(2));
+        phi.getIn().connect(TJR.getOut(2));
         GrR.getIn().connect(GRR.getOut());
     }
 
@@ -97,12 +115,12 @@ public:
     /**
      * @return Output<eeros::math::Vector2>& global robot velocity
      */
-    Output<eeros::math::Vector2> &getOutGvR() { return GRR.getOut(); }
+    Output<eeros::math::Vector2> &getOutGvT() { return GRR.getOut(); }
 
     /**
      * @return Output<eeros::math::Vector2>& global robot position
      */
-    Output<eeros::math::Vector2> &getOutGrR() { return GrR.getOut(); }
+    Output<eeros::math::Vector2> &getOutGrT() { return GrR.getOut(); }
 
     /**
      * @return Output<>& global robot orientation
@@ -112,13 +130,14 @@ public:
     /**
      * @return Output<>& global robot angular velocity
      */
-    Output<> &getOutOmegaR() { return RJW.getOut(2); }
+    Output<> &getOutOmegaT() { return TJR.getOut(2); }
 
     virtual void run()
     {
         // Calculate output values, set timestamps and 
         // call the run method of the subblocks
         RJW.run();
+        TJR.run();
         phi.run();
         GRR.run();
         GrR.run();
@@ -162,6 +181,7 @@ protected:
     double B;                                           // Distance between Wheels (Paramterinput)
     InputSub<eeros::math::Vector2> vw;                  // Speed of the Wheels (Input)
     Blockio<1, 3, eeros::math::Vector2, double> RJW;    // Jacobianmatrix
+    Blockio<3, 3, double> TJR;                          // New Jacobianmatrix
     Blockio<3, 1, double, eeros::math::Vector2> GRR;    // Rotationsmatrix
     I<eeros::math::Vector2> GrR;                        // Global robot position (Output) (Defined as Integrationsblock)
     I<> phi;                                            // Global robot orientation (Output) (Defined as Integrationsblock)

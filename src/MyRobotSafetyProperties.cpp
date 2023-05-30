@@ -91,7 +91,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
     slSystemOn.setOutputActions({toggle(greenLED), toggle(redLED)});
     slMotorPowerOn.setOutputActions({set(greenLED, true), set(redLED, false)});
     slSystemMoving.setOutputActions({set(greenLED, true), set(redLED, false)});
-    
+
 // Define and add level actions
     slSystemOff.setLevelAction([&](SafetyContext *privateContext)
                                { eeros::Executor::stop(); });
@@ -100,7 +100,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                                   {
         cs.fwKinOdom.disable();
         cs.controller.disable();
-        cs.path.disable();
+        cs.tcpVecPosCont.disable();
         cs.timedomain.stop();
         privateContext->triggerEvent(shutdown); });
 
@@ -108,7 +108,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                              {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.disable();
+        cs.tcpVecPosCont.disable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
         privateContext->triggerEvent(motorsHalted);
@@ -118,7 +118,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                                 {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.disable();
+        cs.tcpVecPosCont.disable();
         cs.timedomain.start();
         privateContext->triggerEvent(systemStarted); });
 
@@ -126,13 +126,13 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                                {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.disable(); });
+        cs.tcpVecPosCont.disable(); });
 
     slEmergencyBraking.setLevelAction([&](SafetyContext *privateContext)
                                       {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.disable();
+        cs.tcpVecPosCont.disable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
             privateContext->triggerEvent(motorsHalted);
@@ -142,13 +142,13 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                               {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.disable(); });
+        cs.tcpVecPosCont.disable(); });
 
     slMotorPowerOn.setLevelAction([&, dt](SafetyContext *privateContext)
                                   {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.enable();
+        cs.tcpVecPosCont.enable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) > 1e-1 || abs(cs.Ed.getOut().getSignal().getValue()(1)) > 1e-1)
         {
             privateContext->triggerEvent(startMoving);
@@ -158,7 +158,7 @@ MyRobotSafetyProperties::MyRobotSafetyProperties(ControlSystem &cs, double dt)
                                   {
         cs.fwKinOdom.enable();
         cs.controller.enable();
-        cs.path.enable();
+        cs.tcpVecPosCont.enable();
         if (abs(cs.Ed.getOut().getSignal().getValue()(0)) < 1e-3 && abs(cs.Ed.getOut().getSignal().getValue()(1)) < 1e-3)
         {
             privateContext->triggerEvent(stopMoving);

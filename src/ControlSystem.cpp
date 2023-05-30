@@ -4,9 +4,9 @@
 ControlSystem::ControlSystem(double dt)
     :   enc1("enc1"),
         enc2("enc2"),
-        fwKinOdom(0.15),
-        invKin(0.15),
-        path(0.5, 1.0, 1.0, 1e-3, 1e-3),
+        fwKinOdom(0.15, 0.17),
+        tcpVecPosCont(10.0, 0.7, 0.1),
+        invKin(0.17, 0.15),
         controller(1 / dt, 0.7, 2.3, 3441.0 / 104.0 / 0.04 * 3441.0 / 104.0 / 0.04 * 6.8e-8, 0.1),
         invMot(0.1 / 0.04, 21.2 * 0.04, 3441.0 / 104.0 / 0.04, 8.44e-3, 8.0),
         M1("motor1"),
@@ -19,7 +19,6 @@ ControlSystem::ControlSystem(double dt)
     mux.setName("Mux");
     Ed.setName("Ed");
     fwKinOdom.setName("forward Kinematics");
-    path.setName("PathPlanning");
     invKin.setName("inverse Kinematics");
     controller.setName("controller");
     invMot.setName("invMotMod");
@@ -34,13 +33,10 @@ ControlSystem::ControlSystem(double dt)
     mux.getOut().getSignal().setName("q [m]");
     Ed.getOut().getSignal().setName("V_w [m/s]");
 
-    fwKinOdom.getOutGvR().getSignal().setName("V_R [m/s]");
-    fwKinOdom.getOutGrR().getSignal().setName("r_r [m]");
+    fwKinOdom.getOutGvT().getSignal().setName("V_T [m/s]");
+    fwKinOdom.getOutGrT().getSignal().setName("r_T [m]");
     fwKinOdom.getOutPhi().getSignal().setName("phi [rad]");
-    fwKinOdom.getOutOmegaR().getSignal().setName("omega_R [rad/s]");
-
-    path.geOutRvRx_d().getSignal().setName("V_R_d [m/s]");
-    path.getOutomegaR_d().getSignal().setName("omega_R_d [rad/s]");
+    fwKinOdom.getOutOmegaT().getSignal().setName("omega_T [rad/s]");
 
     invKin.getOut().getSignal().setName("V_w_d [m/s]");
 
@@ -56,11 +52,10 @@ ControlSystem::ControlSystem(double dt)
 
     fwKinOdom.getIn().connect(Ed.getOut());
 
-    path.getInGrR().connect(fwKinOdom.getOutGrR());
-    path.getInphi().connect(fwKinOdom.getOutPhi());
+    tcpVecPosCont.getIn().connect(fwKinOdom.getOutGrT());
 
-    invKin.getInRvRx().connect(path.geOutRvRx_d());
-    invKin.getInOmegaR().connect(path.getOutomegaR_d());
+    invKin.getInGvTc().connect(tcpVecPosCont.getOut());
+    invKin.getInPhi().connect(fwKinOdom.getOutPhi());
 
     controller.getIn(0).connect(invKin.getOut());
     controller.getIn(1).connect(Ed.getOut());
@@ -79,8 +74,8 @@ ControlSystem::ControlSystem(double dt)
     timedomain.addBlock(mux);
     timedomain.addBlock(Ed);
     timedomain.addBlock(fwKinOdom);
+     timedomain.addBlock(tcpVecPosCont);
     timedomain.addBlock(invKin);
-    timedomain.addBlock(path);
     timedomain.addBlock(controller);
     timedomain.addBlock(invMot);
     timedomain.addBlock(demux);

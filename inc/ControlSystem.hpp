@@ -8,8 +8,8 @@
 #include <eeros/control/Mux.hpp>
 #include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
+#include "customBlocks/TCPVecPosCont.hpp"
 #include "customBlocks/InvKin.hpp"
-#include "customBlocks/PathPlanning.hpp"
 #include "customBlocks/PI_Controller.hpp"
 #include "customBlocks/invMotMod.hpp"
 #include <eeros/control/DeMux.hpp>
@@ -29,9 +29,9 @@ public:
 
     FwKinOdom<> fwKinOdom;                              // forward Kinematics (Defined as a subsystem)
 
-    InvKin<> invKin;                                    // Inverse Kinematics
+    TCPVecPosCont<> tcpVecPosCont;
 
-    PathPlanning<> path;                                // Path Planning
+    InvKin invKin;                                    // Inverse Kinematics
 
     PI_Controller<eeros::math::Vector2> controller;     // Controller
 
