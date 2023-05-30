@@ -8,11 +8,11 @@
 #include <eeros/control/Mux.hpp>
 #include <eeros/control/D.hpp>
 #include "customBlocks/FwKinOdom.hpp"
-#include <eeros/control/Constant.hpp>
 #include "customBlocks/InvKin.hpp"
-
+#include "customBlocks/PathPlanning.hpp"
 #include "customBlocks/PI_Controller.hpp"
 #include "customBlocks/invMotMod.hpp"
+#include <eeros/control/DeMux.hpp>
 #include <eeros/control/PeripheralOutput.hpp>
 
 using namespace eeros::control;
@@ -23,23 +23,23 @@ public:
     ControlSystem(double dt);
 
     // Define Blocks for ControllSystem
+    PeripheralInput<> enc1, enc2;                       // Encoder-Inputsignal (1 and 2)
+    Mux<2> mux;                                         // Merge the two signals into a vector
+    D<eeros::math::Vector2> Ed;                         // Derive the signal
 
-    // Forward Kinematic
-    PeripheralInput<> enc1, enc2;           // Encoder-Inputsignal (1 and 2)
-    Mux<2> E;                               // Merge the two signals into a vector
-    D<eeros::math::Vector2> Ed;             // Derive the signal
-    FwKinOdom<> fwKinOdom;                  // forward Kinematics (Defined as a subsystem)
+    FwKinOdom<> fwKinOdom;                              // forward Kinematics (Defined as a subsystem)
 
-    // Inverse Kinematic
-    Constant<> RvRx, omegaR;                // Constants for testing
-    InvKin<> invKin;                        // Inverse Kinematics
+    InvKin<> invKin;                                    // Inverse Kinematics
 
-    // Controller
-    D<> d;
-    Gain<> g;
-    PI_Controller<> controller; 
-    invMotMod<> invMot;
-    PeripheralOutput<> M1;
+    PathPlanning<> path;                                // Path Planning
+
+    PI_Controller<eeros::math::Vector2> controller;     // Controller
+
+    invMotMod<eeros::math::Vector2> invMot;             // InvMotMod
+
+
+    DeMux<2> demux;                                     // Separation of Vector-Signal 
+    PeripheralOutput<> M1, M2;                          // Motor-Outputsignal (1 and 2)
 
 
     TimeDomain timedomain;
